@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>GRAHAM-PC</Machine>
+    <WindowsUser>Graham</WindowsUser>
+    <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
+    <PackageArchitecture>neutral</PackageArchitecture>
+    <RegisteredManifestChecksum>7290C58774496E80D49162600B863AB42DC63C4B6981CE7B60F94885E29767F9</RegisteredManifestChecksum>
+    <RegisteredPackageMoniker>5c765ba6-12a0-4a3d-8e7c-4389074b008a_1.0.0.0_neutral__ywwvhtjmx9rt8</RegisteredPackageMoniker>
+    <RegisteredUserModeAppID>5c765ba6-12a0-4a3d-8e7c-4389074b008a_ywwvhtjmx9rt8!App</RegisteredUserModeAppID>
+    <RegisteredPackageID>5c765ba6-12a0-4a3d-8e7c-4389074b008a</RegisteredPackageID>
+    <RegisteredPackagePublisher>CN=David</RegisteredPackagePublisher>
+    <RegisteredVersion>1.0.0.0</RegisteredVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\bin\Debug\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-06-26T23:36:09.933</Modified>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\bin\Debug\ParseStarterProject.exe">
+      <PackagePath>ParseStarterProject.exe</PackagePath>
+      <Modified>2015-06-26T23:37:40.177</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\bin\Debug\ParseStarterProject.pdb">
+      <PackagePath>ParseStarterProject.pdb</PackagePath>
+      <Modified>2015-06-26T23:37:40.130</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\lib\Parse.dll">
+      <PackagePath>Parse.dll</PackagePath>
+      <Modified>2015-06-26T23:30:54.734</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\lib\Parse.WinRT.dll">
+      <PackagePath>Parse.WinRT.dll</PackagePath>
+      <Modified>2015-06-26T23:30:54.765</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\lib\Parse.xml">
+      <PackagePath>Parse.xml</PackagePath>
+      <Modified>2015-06-26T23:30:54.785</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\lib\Parse.WinRT.xml">
+      <PackagePath>Parse.WinRT.xml</PackagePath>
+      <Modified>2015-06-26T23:30:54.785</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\Assets\Logo.png">
+      <PackagePath>Assets\Logo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-06-26T23:30:54.573</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\Assets\SmallLogo.png">
+      <PackagePath>Assets\SmallLogo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-06-26T23:30:54.593</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\Assets\SplashScreen.png">
+      <PackagePath>Assets\SplashScreen.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-06-26T23:30:54.593</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\Assets\StoreLogo.png">
+      <PackagePath>Assets\StoreLogo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-06-26T23:30:54.609</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\bin\Debug\App.xaml">
+      <PackagePath>App.xaml</PackagePath>
+      <Modified>2015-06-26T23:30:54.480</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\bin\Debug\Common\StandardStyles.xaml">
+      <PackagePath>Common\StandardStyles.xaml</PackagePath>
+      <Modified>2015-06-26T23:30:54.625</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\bin\Debug\MainPage.xaml">
+      <PackagePath>MainPage.xaml</PackagePath>
+      <Modified>2015-06-26T23:30:54.511</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="E:\Documents\Git\SWAGriculture Desktop App\ParseStarterProject\bin\Debug\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+      <Modified>2015-06-26T23:36:09.840</Modified>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>
