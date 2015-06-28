@@ -46,7 +46,7 @@ namespace SWAGriculture_Base_Station
             FileInfo fi = new FileInfo(path);
             prevLen = fi.Length;
             MakeTail(nLines, path);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(q => ChangeLoop()));
+            ThreadPool.QueueUserWorkItem(q => ChangeLoop());
         }
 
         private void ChangeLoop()

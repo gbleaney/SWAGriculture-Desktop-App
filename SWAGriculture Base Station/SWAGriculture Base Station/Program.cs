@@ -12,10 +12,13 @@ namespace SWAGriculture_Base_Station
 {
     class Program
     {
+        private static readonly string dir = @"C:\Users\Graham\AppData\Roaming\EnOcean\DolphinView\Logs\";
+        private static readonly string file = @"EventLog_2015-06-28_124047.xml";
+
         static void Main(string[] args)
         {
 
-            Tail tail = new Tail(@"C:\Users\Graham\AppData\Roaming\EnOcean\DolphinView\Logs\EventLog_2015-06-28_124047.xml", 5);
+            Tail tail = new Tail(dir+file, 1);
 
             tail.Changed += EventHandler;
 
@@ -24,15 +27,6 @@ namespace SWAGriculture_Base_Station
             Console.Read();
 
             tail.Stop();
-
-            //System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(Book));
-            //System.IO.StreamReader file = new System.IO.StreamReader(@"c:\temp\SerializationOverview.xml");
-            //Book overview = new Book();
-            //overview = (Book)reader.Deserialize(file);
-
-            //Console.WriteLine(overview.title);
-
-
 
         }
 
@@ -46,11 +40,11 @@ namespace SWAGriculture_Base_Station
 
                 if (data == "10")
                 {
-                    ResetTrap(id);
+                    Task.Run(()=>ResetTrap(id));
                 }
                 else if(data=="00")
                 {
-                    TriggerTrap(id);
+                    Task.Run(()=>TriggerTrap(id));
                 }
                 else
                 {
@@ -62,7 +56,7 @@ namespace SWAGriculture_Base_Station
             }
         }
 
-        async static void ResetTrap(string id)
+        static void ResetTrap(string id)
         {
             HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create("http://swagriculture.parseapp.com/reset");
 
@@ -79,12 +73,14 @@ namespace SWAGriculture_Base_Station
                 stream.Write(data, 0, data.Length);
             }
 
-            //HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+            HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
 
-            //string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+            Debug.Print("Reset Sent. Response: {0}", responseString);
         }
 
-        async static void TriggerTrap(string id)
+        static void TriggerTrap(string id)
         {
             HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create("http://swagriculture.parseapp.com/trigger");
 
@@ -101,9 +97,12 @@ namespace SWAGriculture_Base_Station
                 stream.Write(data, 0, data.Length);
             }
 
-            //HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+            HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
 
-            //string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+            Debug.Print("Trigger Sent. Response: {0}", responseString);
+
         }
     }
 }
