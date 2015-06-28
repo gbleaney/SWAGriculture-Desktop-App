@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,22 +14,52 @@ namespace SWAGriculture_Base_Station
     {
         static void Main(string[] args)
         {
-            using (var fs = new FileStream(@"C:\Users\Graham\AppData\Roaming\EnOcean\DolphinView\Logs\EventLog_2015-06-28_124047.xml", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+
+            Tail tail = new Tail(@"C:\Users\Graham\AppData\Roaming\EnOcean\DolphinView\Logs\EventLog_2015-06-28_124047.xml", 5);
+
+            tail.Changed += EventHandler;
+
+            tail.Run();
+
+            Console.Read();
+
+            tail.Stop();
+
+            //System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(Book));
+            //System.IO.StreamReader file = new System.IO.StreamReader(@"c:\temp\SerializationOverview.xml");
+            //Book overview = new Book();
+            //overview = (Book)reader.Deserialize(file);
+
+            //Console.WriteLine(overview.title);
+
+
+
+        }
+
+        static void EventHandler(object obj, Tail.TailEventArgs args)
+        {
+            string line = args.Line;
+            if (line.Contains("<Telegram"))
             {
-                string line;
-                while (fs.Read())
+                string id = line.Substring(line.IndexOf("ID=") + 4, 8);
+                string data = line.Substring(line.IndexOf("Data=") + 6, 2);
+
+                if (data == "10")
                 {
-                    
+                    ResetTrap(id);
                 }
-                //System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(Book));
-                //System.IO.StreamReader file = new System.IO.StreamReader(@"c:\temp\SerializationOverview.xml");
-                //Book overview = new Book();
-                //overview = (Book)reader.Deserialize(file);
+                else if(data=="00")
+                {
+                    TriggerTrap(id);
+                }
+                else
+                {
+                    Debug.Print("Error, Unknown data. ID: {0}, Data: {1}", id, data);
+                }
+
+                Debug.Print("ID: {0}, Data: {1}", id, data);
                 
-                //Console.WriteLine(overview.title);
             }
-
-
         }
 
         async static void ResetTrap(string id)
@@ -48,9 +79,9 @@ namespace SWAGriculture_Base_Station
                 stream.Write(data, 0, data.Length);
             }
 
-            HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+            //HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
 
-            string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            //string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
         }
 
         async static void TriggerTrap(string id)
@@ -70,9 +101,9 @@ namespace SWAGriculture_Base_Station
                 stream.Write(data, 0, data.Length);
             }
 
-            HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+            //HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
 
-            string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            //string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
         }
     }
 }
