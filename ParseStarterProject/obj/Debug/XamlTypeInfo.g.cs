@@ -24,7 +24,7 @@ namespace ParseStarterProject
             return _provider.GetXamlTypeByType(type);
         }
 
-        public global::Windows.UI.Xaml.Markup.IXamlType GetXamlType(global::System.String fullName)
+        public global::Windows.UI.Xaml.Markup.IXamlType GetXamlType(string fullName)
         {
             if(_provider == null)
             {
@@ -49,41 +49,51 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
     {
         public global::Windows.UI.Xaml.Markup.IXamlType GetXamlTypeByType(global::System.Type type)
         {
-            string standardName;
-            global::Windows.UI.Xaml.Markup.IXamlType xamlType = null;
-            if(_xamlTypeToStandardName.TryGetValue(type, out standardName))
+            global::Windows.UI.Xaml.Markup.IXamlType xamlType;
+            if (_xamlTypeCacheByType.TryGetValue(type, out xamlType))
             {
-                xamlType = GetXamlTypeByName(standardName);
+                return xamlType;
             }
-            else
+            int typeIndex = LookupTypeIndexByType(type);
+            if(typeIndex != -1)
             {
-                xamlType = GetXamlTypeByName(type.FullName);
+                xamlType = CreateXamlType(typeIndex);
+            }
+            if (xamlType != null)
+            {
+                _xamlTypeCacheByName.Add(xamlType.FullName, xamlType);
+                _xamlTypeCacheByType.Add(xamlType.UnderlyingType, xamlType);
             }
             return xamlType;
         }
 
         public global::Windows.UI.Xaml.Markup.IXamlType GetXamlTypeByName(string typeName)
         {
-            if (global::System.String.IsNullOrEmpty(typeName))
+            if (string.IsNullOrEmpty(typeName))
             {
                 return null;
             }
             global::Windows.UI.Xaml.Markup.IXamlType xamlType;
-            if (_xamlTypes.TryGetValue(typeName, out xamlType))
+            if (_xamlTypeCacheByName.TryGetValue(typeName, out xamlType))
             {
                 return xamlType;
             }
-            xamlType = CreateXamlType(typeName);
+            int typeIndex = LookupTypeIndexByName(typeName);
+            if(typeIndex != -1)
+            {
+                xamlType = CreateXamlType(typeIndex);
+            }
             if (xamlType != null)
             {
-                _xamlTypes.Add(typeName, xamlType);
+                _xamlTypeCacheByName.Add(xamlType.FullName, xamlType);
+                _xamlTypeCacheByType.Add(xamlType.UnderlyingType, xamlType);
             }
             return xamlType;
         }
 
         public global::Windows.UI.Xaml.Markup.IXamlMember GetMemberByLongName(string longMemberName)
         {
-            if (global::System.String.IsNullOrEmpty(longMemberName))
+            if (string.IsNullOrEmpty(longMemberName))
             {
                 return null;
             }
@@ -100,42 +110,89 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
             return xamlMember;
         }
 
-        global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlType> _xamlTypes = new global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlType>();
-        global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlMember> _xamlMembers = new global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlMember>();
-        global::System.Collections.Generic.Dictionary<global::System.Type, string> _xamlTypeToStandardName = new global::System.Collections.Generic.Dictionary<global::System.Type, string>();
+        global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlType>
+                _xamlTypeCacheByName = new global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlType>();
 
-        private void AddToMapOfTypeToStandardName(global::System.Type t, global::System.String str)
+        global::System.Collections.Generic.Dictionary<global::System.Type, global::Windows.UI.Xaml.Markup.IXamlType>
+                _xamlTypeCacheByType = new global::System.Collections.Generic.Dictionary<global::System.Type, global::Windows.UI.Xaml.Markup.IXamlType>();
+
+        global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlMember>
+                _xamlMembers = new global::System.Collections.Generic.Dictionary<string, global::Windows.UI.Xaml.Markup.IXamlMember>();
+
+        string[] _typeNameTable = null;
+        global::System.Type[] _typeTable = null;
+
+        private void InitTypeTables()
         {
-            if(!_xamlTypeToStandardName.ContainsKey(t))
+            _typeNameTable = new string[3];
+            _typeNameTable[0] = "ParseStarterProject.MainPage";
+            _typeNameTable[1] = "Windows.UI.Xaml.Controls.Page";
+            _typeNameTable[2] = "Windows.UI.Xaml.Controls.UserControl";
+
+            _typeTable = new global::System.Type[3];
+            _typeTable[0] = typeof(global::ParseStarterProject.MainPage);
+            _typeTable[1] = typeof(global::Windows.UI.Xaml.Controls.Page);
+            _typeTable[2] = typeof(global::Windows.UI.Xaml.Controls.UserControl);
+        }
+
+        private int LookupTypeIndexByName(string typeName)
+        {
+            if (_typeNameTable == null)
             {
-                _xamlTypeToStandardName.Add(t, str);
+                InitTypeTables();
             }
+            for (int i=0; i<_typeNameTable.Length; i++)
+            {
+                if(0 == string.CompareOrdinal(_typeNameTable[i], typeName))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private int LookupTypeIndexByType(global::System.Type type)
+        {
+            if (_typeTable == null)
+            {
+                InitTypeTables();
+            }
+            for(int i=0; i<_typeTable.Length; i++)
+            {
+                if(type == _typeTable[i])
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         private object Activate_0_MainPage() { return new global::ParseStarterProject.MainPage(); }
 
-
-        private global::Windows.UI.Xaml.Markup.IXamlType CreateXamlType(string typeName)
+        private global::Windows.UI.Xaml.Markup.IXamlType CreateXamlType(int typeIndex)
         {
             global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlSystemBaseType xamlType = null;
             global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlUserType userType;
+            string typeName = _typeNameTable[typeIndex];
+            global::System.Type type = _typeTable[typeIndex];
 
-            switch (typeName)
+            switch (typeIndex)
             {
-            case "Windows.UI.Xaml.Controls.Page":
-                xamlType = new global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlSystemBaseType(typeName, typeof(global::Windows.UI.Xaml.Controls.Page));
-                break;
 
-            case "Windows.UI.Xaml.Controls.UserControl":
-                xamlType = new global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlSystemBaseType(typeName, typeof(global::Windows.UI.Xaml.Controls.UserControl));
-                break;
-
-            case "ParseStarterProject.MainPage":
-                userType = new global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::ParseStarterProject.MainPage), GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
+            case 0:   //  ParseStarterProject.MainPage
+                userType = new global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
                 userType.Activator = Activate_0_MainPage;
+                userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
+            case 1:   //  Windows.UI.Xaml.Controls.Page
+                xamlType = new global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
+
+            case 2:   //  Windows.UI.Xaml.Controls.UserControl
+                xamlType = new global::ParseStarterProject.ParseStarterProject_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
             }
             return xamlType;
         }
@@ -148,7 +205,6 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
             // No Local Properties
             return xamlMember;
         }
-
     }
 
     
@@ -184,13 +240,15 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
         virtual public bool IsDictionary { get { throw new global::System.NotImplementedException(); } }
         virtual public bool IsMarkupExtension { get { throw new global::System.NotImplementedException(); } }
         virtual public bool IsBindable { get { throw new global::System.NotImplementedException(); } }
+        virtual public bool IsReturnTypeStub { get { throw new global::System.NotImplementedException(); } }
+        virtual public bool IsLocalType { get { throw new global::System.NotImplementedException(); } }
         virtual public global::Windows.UI.Xaml.Markup.IXamlType ItemType { get { throw new global::System.NotImplementedException(); } }
         virtual public global::Windows.UI.Xaml.Markup.IXamlType KeyType { get { throw new global::System.NotImplementedException(); } }
         virtual public object ActivateInstance() { throw new global::System.NotImplementedException(); }
         virtual public void AddToMap(object instance, object key, object item)  { throw new global::System.NotImplementedException(); }
         virtual public void AddToVector(object instance, object item)  { throw new global::System.NotImplementedException(); }
         virtual public void RunInitializer()   { throw new global::System.NotImplementedException(); }
-        virtual public object CreateFromString(global::System.String input)   { throw new global::System.NotImplementedException(); }
+        virtual public object CreateFromString(string input)   { throw new global::System.NotImplementedException(); }
     }
     
     internal delegate object Activator();
@@ -207,6 +265,8 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
         bool _isArray;
         bool _isMarkupExtension;
         bool _isBindable;
+        bool _isReturnTypeStub;
+        bool _isLocalType;
 
         string _contentPropertyName;
         string _itemTypeName;
@@ -230,6 +290,8 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
         override public bool IsDictionary { get { return (DictionaryAdd != null); } }
         override public bool IsMarkupExtension { get { return _isMarkupExtension; } }
         override public bool IsBindable { get { return _isBindable; } }
+        override public bool IsReturnTypeStub { get { return _isReturnTypeStub; } }
+        override public bool IsLocalType { get { return _isLocalType; } }
 
         override public global::Windows.UI.Xaml.Markup.IXamlMember ContentProperty
         {
@@ -280,18 +342,18 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(UnderlyingType.TypeHandle);
         }
 
-        override public global::System.Object CreateFromString(global::System.String input)
+        override public object CreateFromString(string input)
         {
             if (_enumValues != null)
             {
-                global::System.Int32 value = 0;
+                int value = 0;
 
                 string[] valueParts = input.Split(',');
 
                 foreach (string valuePart in valueParts) 
                 {
                     object partValue;
-                    global::System.Int32 enumFieldValue = 0;
+                    int enumFieldValue = 0;
                     try
                     {
                         if (_enumValues.TryGetValue(valuePart.Trim(), out partValue))
@@ -308,7 +370,7 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
                             {
                                 foreach( string key in _enumValues.Keys )
                                 {
-                                    if( global::System.String.Compare(valuePart.Trim(), key, global::System.StringComparison.OrdinalIgnoreCase) == 0 )
+                                    if( string.Compare(valuePart.Trim(), key, global::System.StringComparison.OrdinalIgnoreCase) == 0 )
                                     {
                                         if( _enumValues.TryGetValue(key.Trim(), out partValue) )
                                         {
@@ -356,6 +418,16 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
         public void SetIsBindable()
         {
             _isBindable = true;
+        }
+
+        public void SetIsReturnTypeStub()
+        {
+            _isReturnTypeStub = true;
+        }
+
+        public void SetIsLocalType()
+        {
+            _isLocalType = true;
         }
 
         public void SetItemTypeName(string itemTypeName)
@@ -418,7 +490,7 @@ namespace ParseStarterProject.ParseStarterProject_XamlTypeInfo
             get { return _provider.GetXamlTypeByName(_typeName); }
         }
 
-        public void SetTargetTypeName(global::System.String targetTypeName)
+        public void SetTargetTypeName(string targetTypeName)
         {
             _targetTypeName = targetTypeName;
         }

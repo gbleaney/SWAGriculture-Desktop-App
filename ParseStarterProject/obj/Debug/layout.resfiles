@@ -2,6 +2,7 @@ Assets\Logo.png
 Assets\SmallLogo.png
 Assets\SplashScreen.png
 Assets\StoreLogo.png
-App.xaml
-Common\StandardStyles.xaml
-MainPage.xaml
+App.xbf
+Common\StandardStyles.xbf
+MainPage.xbf
+ParseStarterProject.xr.xml
