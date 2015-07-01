@@ -58,7 +58,7 @@ namespace SWAGriculture_Base_Station
 
         static void ResetTrap(string id)
         {
-            HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create("http://swagriculture.parseapp.com/reset");
+            HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create("http://162.243.170.36:8000/reset");
 
             ASCIIEncoding encoding = new ASCIIEncoding();
             string postData = "id=" + id;
@@ -82,7 +82,7 @@ namespace SWAGriculture_Base_Station
 
         static void TriggerTrap(string id)
         {
-            HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create("http://swagriculture.parseapp.com/trigger");
+            HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create("http://162.243.170.36:8000/trigger");
 
             ASCIIEncoding encoding = new ASCIIEncoding();
             string postData = "id=" + id;
